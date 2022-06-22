@@ -10,13 +10,13 @@ const PORT = 4500;
 app.use(express.json());
 app.listen(PORT, ()=>console.log(`Port # is : ${PORT}`))
 
-app.get("/",(req,res)=>{
+app.get("/api",(req,res)=>{
 
 
     res.send("hello 2022")
 })
 
-app.post("/handleSignIn",(req,res)=>{
+app.post("/api/handleSignIn",(req,res)=>{
 
     console.log("handleSignIn:");
     console.log(req.body);
@@ -30,7 +30,7 @@ app.post("/handleSignIn",(req,res)=>{
     callAPI();
 })
 
-app.post("/handleSignUp", (req,res)=>{
+app.post("/api/handleSignUp", (req,res)=>{
     console.log("/handleSignUp");
     console.log(req.body);
 
@@ -45,7 +45,7 @@ app.post("/handleSignUp", (req,res)=>{
     callAPI();
 })
 
-app.post("/handleConfirmation", (req,res)=>{
+app.post("/api/handleConfirmation", (req,res)=>{
     console.log("/handleConfirmation");
     console.log(req.body);
 
