@@ -7,15 +7,6 @@ const {createUserTuple, addPdfTuple, addRecipient} = require("./db-functions")
 
 
 
-let init = async () => {
-    let obj = await createUserTuple({
-        name: "sia x",
-        email: "siaxiong52@gmail.com"
-        })
-    // console.log(obj);
-    
-
-};
 // addPdfTuple();
 // init();
 

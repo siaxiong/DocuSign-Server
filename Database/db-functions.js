@@ -14,7 +14,8 @@ const createUserTuple = async (user) => {
 
     try {
         let data = await User.create({
-            name: "default for now",
+            firstName: user.firstName,
+            lastName: user.lastName,
             email: user.email
         })
 
@@ -27,25 +28,20 @@ const createUserTuple = async (user) => {
 
 }
 
-const addPdfTuple = async () => {
+const addPdfTuple = async (pdf) => {
 
-    let filePath = __dirname + "/samplePdf.pdf"
-    let base64File = "data:application/pdf;base64," + fs.readFileSync(filePath, 'base64')
-    // console.log(base64File);
+    // let filePath = __dirname + "/samplePdf.pdf"
+    let base64File = `data:application/pdf;base64,${pdf.base64}`;
+    console.log(base64File);
 
     const buffer = Buffer.from(base64File, 'base64');
     const blob = new Blob(buffer);
-    console.log("blob is: " + blob)
-
-    let obj = {
-
-    }
 
     try {
         let data = await PDF.create({
-            fileName: "testFile",
+            fileName: pdf.fileName,
             fileObj: blob,
-            fk_email: "siaxiong52@gmail.com"
+            fk_email: pdf.email
             
         })
 

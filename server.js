@@ -45,7 +45,7 @@ app.post("/api/handleSignUp", (req,res)=>{
         const requestBody = {"email": req.body.username,"password":req.body.password,"firstName":req.body.firstName,"lastName":req.body.lastName,"action":"SIGN_UP"}
         const payload = await axios.post("https://pnrfumyfd2.execute-api.us-west-2.amazonaws.com/beta/", requestBody)
         
-        // createUserTuple()
+        createUserTuple(requestBody);
         console.log("payload from sign up")
         console.log(payload.data.body)
         res.send(payload.data.body)
@@ -70,3 +70,9 @@ app.post("/api/handleConfirmation", (req,res)=>{
 
 })
 
+app.post("/api/handleAddPdf", (req,res)=>{
+    console.log("/api/handleAddPdf");
+    console.log(req.body);
+    const data = addPdfTuple(req.body.pdf)
+    res.send(data)
+})
