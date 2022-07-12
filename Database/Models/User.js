@@ -1,4 +1,4 @@
-const {Sequelize, DataTypes} = require("sequelize")
+const {DataTypes} = require("sequelize");
 const sequelize = require("../connection");
 
 const User = sequelize.define("USERs", {
@@ -6,29 +6,29 @@ const User = sequelize.define("USERs", {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-            notEmpty: true
-        }
+            notEmpty: true,
+        },
     },
     lastName: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-            notEmpty: true
-        }
+            notEmpty: true,
+        },
     },
     email: {
         type: DataTypes.STRING,
         primaryKey: true,
         allowNull: false,
         validate: {
-            notEmpty: true
-        }
-    }
+            notEmpty: true,
+        },
+    },
 
 }, {
-    tableName: 'USERs',
-    timestamps: false
-})
+    tableName: "USERs",
+    timestamps: false,
+});
 
 
 module.exports = User;

@@ -1,6 +1,5 @@
-const {Sequelize, Dataypes, DataTypes} = require("sequelize")
-const sequelize = require("../connection")
-const User = require("./User")
+const {DataTypes} = require("sequelize");
+const sequelize = require("../connection");
 
 const PDF = sequelize.define("PDFs", {
     fileName: {
@@ -8,21 +7,21 @@ const PDF = sequelize.define("PDFs", {
         allowNull: false,
         primaryKey: true,
         validate: {
-            notEmpty: true
-        }
+            notEmpty: true,
+        },
     },
     fileObj: {
-        type: DataTypes.BLOB,
+        // eslint-disable-next-line new-cap
+        type: DataTypes.BLOB("long"),
         allowNull: false,
         validate: {
-            notEmpty: true
-        }
-        
-    }
+            notEmpty: true,
+        },
+    },
 }, {
     tableName: "PDFs",
-    timestamps: false
-})
+    timestamps: false,
+});
 
 
 module.exports = PDF;

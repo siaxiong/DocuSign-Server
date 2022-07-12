@@ -1,22 +1,21 @@
-const User = require("./User")
-const PDF = require("./PDF")
+const User = require("./User");
+const PDF = require("./PDF");
 const Recipient = require("./Recipient");
 const sequelize = require("../connection");
-
 
 
 User.hasMany(PDF, {
     foreignKey: {
         name: "fk_email",
-        allowNull: false
-    }
+        allowNull: false,
+    },
 });
 
 PDF.belongsTo(User, {
     foreignKey: {
         name: "fk_email",
-        allowNull: false
-    }
+        allowNull: false,
+    },
 });
 
 
@@ -25,20 +24,20 @@ PDF.hasMany(Recipient, {
         name: "fk_fileName",
         allowNull: false,
         validate: {
-            notEmpty: true
-        }
-    }
-})
+            notEmpty: true,
+        },
+    },
+});
 
 Recipient.belongsTo(PDF, {
     foreignKey: {
         name: "fk_fileName",
         allowNull: false,
         validate: {
-            notEmpty: true
-        }
-    }
-})
+            notEmpty: true,
+        },
+    },
+});
 
 sequelize.sync();
 

@@ -1,0 +1,48 @@
+{
+    "env": {
+        "browser": false,
+        "node": true,
+        "commonjs": true,
+        "es2021": true
+    },
+    "extends": [
+        "plugin:jsdoc/recommended",
+        "google"
+    ],
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": "latest"
+    },
+    "plugins": [
+        "eslint-plugin-jsdoc"
+    ],
+    "rules": {
+        "valid-jsdoc": 0,
+        "jsdoc/require-returns":0,
+        "jsdoc/require-returns-type":0,
+        "jsdoc/require-param-type":0,
+        "jsdoc/newline-after-description":0,
+        "max-len": [
+            "error",
+            120
+        ],
+        "indent": [
+            "error",
+            4
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quotes": [
+            "error",
+            "double"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ]
+    }
+}

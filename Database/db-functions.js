@@ -1,76 +1,65 @@
-const User = require("./Models/User")
-const PDF = require("./Models/PDF")
-const Recipient = require("./Models/Recipient")
-const Associations = require("./Models/Associations")
-const sequelize = require("./connection")
-const fs = require("fs")
-const path = require("path")
-const { Blob } = require("buffer");
+const User = require("./Models/User");
+const PDF = require("./Models/PDF");
+const Recipient = require("./Models/Recipient");
 
-
-
-
+/**
+ * It creates a new user tuple in the database
+ * @param user - The user object that is passed in from the front end.
+ * @returns The data is being returned.
+ */
 const createUserTuple = async (user) => {
+    console.log("createUserTuple");
+    console.log(user);
 
     try {
-        let data = await User.create({
+        const data = await User.create({
             firstName: user.firstName,
             lastName: user.lastName,
-            email: user.email
-        })
+            email: user.email,
+        });
 
         return data;
-        
     } catch (error) {
         console.error(error);
         return error;
     }
+};
 
-}
+/**
+ * It returns all the PDFs that belong to a user
+ * @param userEmail - The email of the user who is logged in.
+ * @returns An array of objects.
+ */
+const getAllPDFs = async (userEmail) =>{
+    const PDFs = await PDF.findAll({
+        raw: true,
+        where: {
+            fk_email: userEmail,
+        },
+    });
+    console.log(PDFs);
+    return PDFs;
+};
 
-const addPdfTuple = async (pdf) => {
-
-    // let filePath = __dirname + "/samplePdf.pdf"
-    let base64File = `data:application/pdf;base64,${pdf.base64}`;
-    console.log(base64File);
-
-    const buffer = Buffer.from(base64File, 'base64');
-    const blob = new Blob(buffer);
-
+/**
+ * It creates a new recipient in the database
+ * @returns The data is being returned.
+ */
+const addRecipient = async () => {
     try {
-        let data = await PDF.create({
-            fileName: pdf.fileName,
-            fileObj: blob,
-            fk_email: pdf.email
-            
-        })
+        const data = await Recipient.create({
+            email: "siaxiong@yahoo.com",
+            fk_fileName: "testFile",
+        });
+
+        console.log(data);
 
         return data;
-
-    }catch(error){
-        console.error(error)
+    } catch (error) {
+        console.error(error);
         return error;
     }
-}
-
-const addRecipient = async () => {
-
-    try {
-
-        let data = await Recipient.create({
-            email: "siaxiong@yahoo.com",
-            fk_fileName: "testFile"
-        })  
-
-        console.log(data)
-        
-        return data
-        
-    } catch (error) {
-        console.error(error)
-        return error
-    }
-}
+};
 
 
-module.exports = {createUserTuple, addPdfTuple, addRecipient};
+module.exports = {createUserTuple, getAllPDFs, addRecipient};

@@ -1,6 +1,5 @@
-const {Sequelize, DataTypes} = require("sequelize")
-const sequelize = require("../connection")
-const PDF = require("./PDF")
+const {DataTypes} = require("sequelize");
+const sequelize = require("../connection");
 
 const Recipient = sequelize.define("RECIPIENTS", {
     email: {
@@ -8,13 +7,13 @@ const Recipient = sequelize.define("RECIPIENTS", {
         allowNull: false,
         primaryKey: true,
         validate: {
-            notEmpty: true
-        }
-    }
+            notEmpty: true,
+        },
+    },
 }, {
     tableName: "RECIPIENTs",
-    timestamps: false
-})
+    timestamps: false,
+});
 
 
-module.exports = Recipient
+module.exports = Recipient;

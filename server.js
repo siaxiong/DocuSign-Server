@@ -1,78 +1,70 @@
 const express = require("express");
-const bodyparser = require("body-parser")
 const axios = require("axios");
-const path = require("path");
-const sequelize = require("./Database/db-init")
-const {createUserTuple, 
-addPdfTuple, addRecipient} = require("./Database/db-functions")
-
-sequelize;
+const cors = require("cors");
+const {verifyJwt} = require("./Strategy/verify_jwt");
+const passport = require("passport");
+const secureRoutes = require("./SecureRoutes/secure-routes");
+const JWT_STRATEGY = require("./Strategy/JWT_STRATEGY");
+const {createUserTuple} = require("./Database/db-functions");
 
 const app = express();
 const PORT = 4500;
 
 
+app.listen(PORT, ()=>console.log(`Port # is : ${PORT}`));
 app.use(express.json());
-app.listen(PORT, ()=>console.log(`Port # is : ${PORT}`))
+app.use(cors());
+passport.use(JWT_STRATEGY);
+app.use("/api/db",
+    passport.authenticate("jwt", {session: false}), secureRoutes);
 
-app.get("/api",(req,res)=>{
 
-
-    res.send("hello 2022")
-})
-
-app.post("/api/handleSignIn",(req,res)=>{
-
-    console.log("handleSignIn:");
-    console.log(req.body.email);
-    console.log(req.body.password);
-
+app.post("/api/handleSignIn", (req, res)=>{
+    console.log("/api/handleSignIn");
     const callAPI = async () => {
-        const requestBody = {"email": req.body.email,"password":req.body.password,"action":"SIGN_IN"}
-        const payload = await axios.post("https://o17wemp11k.execute-api.us-west-2.amazonaws.com/beta/", requestBody).catch(error=>console.log(error))
-        // const data = JSON.parse(payload.data.body)
-        res.send(payload.data.body);
-    }
+        try {
+            const requestBody = {"email": req.body.email,
+                "password": req.body.password, "action": "SIGN_IN"};
+            const payload = await axios
+                .post("https://o17wemp11k.execute-api.us-west-2.amazonaws.com/beta/", requestBody)
+                .catch((error)=>console.log(error));
+            const content = JSON.parse(payload.data.body);
+            verifyJwt(content.jwt) ? res.send(content) : res.send(null);
+        } catch (error) {
+            console.error(error);
+            res.send(error);
+        }
+    };
     callAPI();
-})
+});
 
-app.post("/api/handleSignUp", (req,res)=>{
+app.post("/api/handleSignUp", (req, res)=>{
     console.log("/handleSignUp");
-    console.log(req.body);
-
-
+    // console.log(req.body);
     const callAPI = async () => {
-        const requestBody = {"email": req.body.username,"password":req.body.password,"firstName":req.body.firstName,"lastName":req.body.lastName,"action":"SIGN_UP"}
-        const payload = await axios.post("https://pnrfumyfd2.execute-api.us-west-2.amazonaws.com/beta/", requestBody)
-        
+        const requestBody = {"email": req.body.username,
+            "password": req.body.password, "firstName": req.body.firstName,
+            "lastName": req.body.lastName, "action": "SIGN_UP"};
+        const payload = await axios
+            .post("https://pnrfumyfd2.execute-api.us-west-2.amazonaws.com/beta/", requestBody);
         createUserTuple(requestBody);
-        console.log("payload from sign up")
-        console.log(payload.data.body)
-        res.send(payload.data.body)
-    }
+        res.send(payload.data.body);
+    };
 
     callAPI();
-})
 
-app.post("/api/handleConfirmation", (req,res)=>{
+    res.send("success");
+});
+
+app.post("/api/handleConfirmation", (req, res)=>{
     console.log("/handleConfirmation");
-    console.log(req.body);
-
 
     const callAPI = async () => {
-        const requestBody = {"email": req.body.email,"confirmationCode":req.body.code,"action":"CONFIRMATION"}
-        const payload = await axios.post("https://4q8tdebyk5.execute-api.us-west-2.amazonaws.com/beta/", requestBody)
-        res.send(payload.data.body)
-
-    }
+        const requestBody = {"email": req.body.email,
+            "confirmationCode": req.body.code, "action": "CONFIRMATION"};
+        const payload = await axios.post("https://4q8tdebyk5.execute-api.us-west-2.amazonaws.com/beta/", requestBody);
+        res.send(payload.data.body.Credentials);
+    };
 
     callAPI();
-
-})
-
-app.post("/api/handleAddPdf", (req,res)=>{
-    console.log("/api/handleAddPdf");
-    console.log(req.body);
-    const data = addPdfTuple(req.body.pdf)
-    res.send(data)
-})
+});
