@@ -1,9 +1,8 @@
 const {Sequelize} = require("sequelize");
-const cls = require("cls-hooked");
+// const cls = require("cls-hooked");
 
-require("dotenv").config();
-const namespace = cls.createNamespace("csc-191");
-Sequelize.useCLS(namespace);
+// const namespace = cls.createNamespace("csc-191");
+// Sequelize.useCLS(namespace);
 
 const DATABASE_HOST = process.env.DATABASE_HOST;
 const DATABASE_PORT = process.env.DATABASE_PORT;

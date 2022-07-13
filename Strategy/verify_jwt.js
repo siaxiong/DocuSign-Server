@@ -1,6 +1,8 @@
+require("dotenv").config();
+
 const jwt = require("jsonwebtoken");
 const jwkToPem = require("jwk-to-pem");
-const jwk = require("./jwks.json");
+const jwk = require(process.env.AWS_JWKS_JSON_PATH);
 
 const verifyJwt = async (token) => {
     const arr = token.split(".");
