@@ -102,10 +102,14 @@ const getAllFiles = async () => {
 
     const cmd = new ListObjectsCommand(bucketParams);
     const response = await s3Client.send(cmd);
-    console.log("🚀 --------------------------------------------------------------------------🚀");
-    console.log("🚀 -> file: s3Functions.js -> line 99 -> getAllFiles -> response", response);
-    console.log("🚀 --------------------------------------------------------------------------🚀");
-    // return response;
+
+    const keyArr = response.Contents.map(item => item.Key);
+    const base64FileArr = await Promise.all(keyArr.map(async key =>{
+        const data = await getFile(key);
+        return {fileName: key, data};
+    }));
+
+    return base64FileArr;
 };
 
 

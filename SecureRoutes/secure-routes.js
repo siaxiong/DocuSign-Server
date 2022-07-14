@@ -38,7 +38,11 @@ router.get("/getFile", async (req, res)=>{
 
 router.get("/getAllFiles", async (req, res)=>{
     console.log("/getAllFiles");
-    res.send("Success");
+    const response = await getAllFiles();
+    console.log("🚀 ---------------------------------------------------------------------------🚀");
+    console.log("🚀 -> file: secure-routes.js -> line 42 -> router.get -> response", response);
+    console.log("🚀 ---------------------------------------------------------------------------🚀");
+    res.send(response);
 });
 
 
