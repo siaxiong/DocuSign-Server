@@ -6,6 +6,13 @@ const passport = require("passport");
 const secureRoutes = require("./SecureRoutes/secure-routes");
 const JWT_STRATEGY = require("./Strategy/JWT_STRATEGY");
 const {createUserTuple} = require("./Database/db-functions");
+// const sequelize = require("./Database/connection");
+const PDF = require("./Database/Models/PDF");
+const USER = require("./Database/Models/Recipient");
+const RECIPIENT = require("./Database/Models/Recipient");
+const ASSOCIATIONS = require("./Database/Models/Associations");
+
+// sequelize.drop();
 
 const app = express();
 const PORT = 4500;
@@ -48,12 +55,12 @@ app.post("/api/handleSignUp", (req, res)=>{
         const payload = await axios
             .post("https://pnrfumyfd2.execute-api.us-west-2.amazonaws.com/beta/", requestBody);
         createUserTuple(requestBody);
-        res.send(payload.data.body);
+        res.send("success");
     };
 
     callAPI();
 
-    res.send("success");
+    // res.send("success");
 });
 
 app.post("/api/handleConfirmation", (req, res)=>{

@@ -61,5 +61,15 @@ const addRecipient = async () => {
     }
 };
 
+const getAllUsers = async () => {
+    try {
+        const data = await User.findAll({attributes: ["email"]});
+        return data;
+    } catch (error) {
+        console.log(error);
+        return error;
+    }
+};
 
-module.exports = {createUserTuple, getAllPDFs, addRecipient};
+
+module.exports = {createUserTuple, getAllPDFs, addRecipient, getAllUsers};

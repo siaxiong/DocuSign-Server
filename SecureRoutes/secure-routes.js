@@ -5,20 +5,27 @@ const router = express.Router();
 const {createUserTuple,
     addPdfTuple, getAllPDFs, addRecipient,
 } = require("../Database/db-functions");
-const {deleteFile, getFile, getAllFiles} = require("../AWS/S3/s3Functions");
+const {addPDF} = require("../Database/PDF_Table/PDF-Functions");
+const {deleteFile, getFile, getAllFiles, getAllEmails} = require("../AWS/S3/s3Functions");
 const upload = require("../AWS/S3/upload");
 const singleUpload = upload.single("file");
 const {s3MiddleWare} = require("../AWS/S3/s3Client");
+const path = require("path");
 
 
 /* This is a post request that is being sent to the server. */
 router.post("/handleAddPdf", singleUpload, async (req, res)=>{
-    console.log("🚀 ------------------------------------------------------------------------------------🚀");
-    console.log("🚀 -> file: secure-routes.js -> line 24 -> router.post -> handleAddPdf ->");
-    console.log("🚀 ------------------------------------------------------------------------------------🚀");
+    let userEmail = (req.file.key).split("/");
+    userEmail = userEmail[0];
 
-    // console.log(req.client)
-    // console.log(req.file)
+    try {
+        await addPDF(req.file.key, userEmail);
+    } catch (error) {
+        console.log("🚀 ----------------------------------------------------------------------🚀");
+        console.log("🚀 -> file: secure-routes.js -> line 23 -> router.post -> error", error);
+        console.log("🚀 ----------------------------------------------------------------------🚀");
+        res.send(error);
+    }
 
     res.send("success!");
 });
@@ -32,16 +39,25 @@ router.delete("/deleteFile", async (req, res)=>{
 });
 
 router.get("/getFile", async (req, res)=>{
+    console.log("/getFile");
     const base64 = await getFile(req.query.fileName);
     res.send(base64);
 });
 
 router.get("/getAllFiles", async (req, res)=>{
     console.log("/getAllFiles");
-    const response = await getAllFiles();
+    const response = await getAllFiles(req.query.email);
     console.log("🚀 ---------------------------------------------------------------------------🚀");
-    console.log("🚀 -> file: secure-routes.js -> line 42 -> router.get -> response", response);
+    console.log("🚀 -> file: secure-routes.js -> line 40 -> router.get -> response", response);
     console.log("🚀 ---------------------------------------------------------------------------🚀");
+
+    res.send(response);
+});
+
+router.get("/getAllEmails", async (req, res)=>{
+    console.log("/getAllEmails");
+    console.loq(req);
+    const response = await getAllEmails();
     res.send(response);
 });
 

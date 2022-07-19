@@ -25,6 +25,7 @@ const upload = multer({
             cb(null, file.originalname);
         },
     }),
+    preservePath: true,
 });
 
 

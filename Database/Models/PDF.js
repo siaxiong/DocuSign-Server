@@ -10,14 +10,6 @@ const PDF = sequelize.define("PDFs", {
             notEmpty: true,
         },
     },
-    fileObj: {
-        // eslint-disable-next-line new-cap
-        type: DataTypes.BLOB("long"),
-        allowNull: false,
-        validate: {
-            notEmpty: true,
-        },
-    },
 }, {
     tableName: "PDFs",
     timestamps: false,
