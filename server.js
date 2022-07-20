@@ -1,29 +1,35 @@
 const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
-const {verifyJwt} = require("./Strategy/verify_jwt");
+const {verifyJwt} = require("./APIs/Strategy/verify_jwt");
 const passport = require("passport");
-const secureRoutes = require("./SecureRoutes/secure-routes");
-const JWT_STRATEGY = require("./Strategy/JWT_STRATEGY");
-const {createUserTuple} = require("./Database/db-functions");
+const JWT_STRATEGY = require("./APIs/Strategy/JWT_STRATEGY");
+const {createUserTuple} = require("./APIs/Unauthenticate/UserAPIs/userAPIs");
+const fileAPIroutes = require("./APIs/Authenticate/FileAPIs/secureFileAPIs");
+const userAPIroutes = require("./APIs/Authenticate/UserAPIs/secureUserAPIs");
+const recipientAPIroutes = require("./APIs/Authenticate/RecipientAPIs/secureRecipientAPIs");
 // const sequelize = require("./Database/connection");
-const PDF = require("./Database/Models/PDF");
-const USER = require("./Database/Models/Recipient");
-const RECIPIENT = require("./Database/Models/Recipient");
-const ASSOCIATIONS = require("./Database/Models/Associations");
+// const PDF = require("./Database/Models/PDF");
+// const USER = require("./Database/Models/Recipient");
+// const RECIPIENT = require("./Database/Models/Recipient");
+// const ASSOCIATIONS = require("./Database/Models/Associations");
 
 // sequelize.drop();
 
 const app = express();
 const PORT = 4500;
 
-
 app.listen(PORT, ()=>console.log(`Port # is : ${PORT}`));
 app.use(express.json());
 app.use(cors());
 passport.use(JWT_STRATEGY);
+
 app.use("/api/db",
-    passport.authenticate("jwt", {session: false}), secureRoutes);
+    passport.authenticate("jwt", {session: false}), fileAPIroutes);
+app.use("/api/db",
+    passport.authenticate("jwt", {session: false}), userAPIroutes);
+app.use("/api/db",
+    passport.authenticate("jwt", {session: false}), recipientAPIroutes);
 
 
 app.post("/api/handleSignIn", (req, res)=>{
@@ -47,11 +53,11 @@ app.post("/api/handleSignIn", (req, res)=>{
 
 app.post("/api/handleSignUp", (req, res)=>{
     console.log("/handleSignUp");
-    // console.log(req.body);
     const callAPI = async () => {
         const requestBody = {"email": req.body.username,
             "password": req.body.password, "firstName": req.body.firstName,
             "lastName": req.body.lastName, "action": "SIGN_UP"};
+        // eslint-disable-next-line no-unused-vars
         const payload = await axios
             .post("https://pnrfumyfd2.execute-api.us-west-2.amazonaws.com/beta/", requestBody);
         createUserTuple(requestBody);

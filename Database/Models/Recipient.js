@@ -10,6 +10,13 @@ const Recipient = sequelize.define("RECIPIENTS", {
             notEmpty: true,
         },
     },
+    signed: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        validate: {
+            notEmpty: true,
+        },
+    },
 }, {
     tableName: "RECIPIENTs",
     timestamps: false,
