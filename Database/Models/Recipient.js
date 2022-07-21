@@ -5,13 +5,26 @@ const Recipient = sequelize.define("RECIPIENTS", {
     email: {
         type: DataTypes.STRING,
         allowNull: false,
-        primaryKey: true,
+        validate: {
+            notEmpty: true,
+        },
+    },
+    order: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
         validate: {
             notEmpty: true,
         },
     },
     signed: {
         type: DataTypes.BOOLEAN,
+        allowNull: false,
+        validate: {
+            notEmpty: true,
+        },
+    },
+    fk_fileName: {
+        type: DataTypes.STRING,
         allowNull: false,
         validate: {
             notEmpty: true,

@@ -36,7 +36,7 @@ const getUploadURL = async (token) => {
  * @param fileName - The name of the file you want to delete.
  * @returns The response from the delete command.
  */
-const deleteFile = async (token, fileName) => {
+const s3DeleteFile = async (token, fileName) => {
     const s3Client = s3Init(token);
     const bucketParams = {
         Bucket: "sxbucket22",
@@ -67,7 +67,7 @@ const streamToString = (stream) =>
  * It takes a file name as an argument, and returns the file from the bucket.
  * @param fileName - The name of the file you want to get from the bucket.
  */
-const getFile = async (fileName) => {
+const s3GetFile = async (fileName) => {
     console.log("🚀 ----------------------------------------------------------------------🚀");
     console.log("🚀 -> file: s3Functions.js -> line 75 -> getFile -> fileName", fileName);
     console.log("🚀 ----------------------------------------------------------------------🚀");
@@ -85,7 +85,7 @@ const getFile = async (fileName) => {
  * It returns a list of all the files in the bucket
  * @param email
  */
-const getAllFiles = async (email) => {
+const s3GetAllFiles = async (email) => {
     const bucketParams = {
         Bucket: "sxbucket22",
         Prefix: email,
@@ -99,7 +99,7 @@ const getAllFiles = async (email) => {
         };
         const keyArr = response.Contents.map(item => item.Key);
         const base64FileArr = await Promise.all(keyArr.map(async key =>{
-            const data = await getFile(key);
+            const data = await s3GetFile(key);
             return {fileName: key, data};
         }));
         return base64FileArr;
@@ -110,4 +110,4 @@ const getAllFiles = async (email) => {
 };
 
 
-module.exports = {getUploadURL, deleteFile, getFile, getAllFiles};
+module.exports = {getUploadURL, s3DeleteFile, s3GetFile, s3GetAllFiles};

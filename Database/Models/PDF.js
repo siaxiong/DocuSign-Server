@@ -10,6 +10,14 @@ const PDF = sequelize.define("PDFs", {
             notEmpty: true,
         },
     },
+    fk_email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        primaryKey: true,
+        validate: {
+            notEmpty: true,
+        },
+    },
 }, {
     tableName: "PDFs",
     timestamps: false,

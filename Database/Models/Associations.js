@@ -8,6 +8,9 @@ User.hasMany(PDF, {
     foreignKey: {
         name: "fk_email",
         allowNull: false,
+        validate: {
+            notEmpty: true,
+        },
     },
 });
 
@@ -15,6 +18,9 @@ PDF.belongsTo(User, {
     foreignKey: {
         name: "fk_email",
         allowNull: false,
+        validate: {
+            notEmpty: true,
+        },
     },
 });
 
@@ -38,6 +44,4 @@ Recipient.belongsTo(PDF, {
         },
     },
 });
-
 sequelize.sync();
-
