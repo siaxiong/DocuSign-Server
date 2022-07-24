@@ -67,7 +67,7 @@ const streamToString = (stream) =>
  * It takes a file name as an argument, and returns the file from the bucket.
  * @param fileName - The name of the file you want to get from the bucket.
  */
-const s3GetFile = async (fileName) => {
+const s3GetSingleFile = async (fileName) => {
     console.log("🚀 ----------------------------------------------------------------------🚀");
     console.log("🚀 -> file: s3Functions.js -> line 75 -> getFile -> fileName", fileName);
     console.log("🚀 ----------------------------------------------------------------------🚀");
@@ -110,4 +110,4 @@ const s3GetAllFiles = async (email) => {
 };
 
 
-module.exports = {getUploadURL, s3DeleteFile, s3GetFile, s3GetAllFiles};
+module.exports = {getUploadURL, s3DeleteFile, s3GetSingleFile, s3GetAllFiles};

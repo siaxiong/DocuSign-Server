@@ -7,21 +7,13 @@ const {addRecipients} = require("../../../Database/RECIPIENT_Table/Recipient-Fun
 const {Op} = require("sequelize");
 const {raw} = require("body-parser");
 
+
+// addRecipients doesnt return anything.
+// Probably should return something.
 router.post("/addRecipients", async (req, res)=>{
     console.log("/addRecipients");
     const emailArr = (req.body.emailList).split(",");
-    await addRecipients(emailArr, req.body.fileName);
-    // console.log(req.body.fileName);
-    // await emailArr.forEach(email => {
-    //     Recipient.create({
-    //         email,
-    //         signed: false,
-    //         fk_fileName: req.body.fileName,
-    //     },
-    //     );
-    // },
-    // );
-
+    await addRecipients(emailArr, req.body.fileName, req.body.ownerEmail);
     res.send("Success! /addRecipients");
 });
 

@@ -10,6 +10,14 @@ const PDF = sequelize.define("PDFs", {
             notEmpty: true,
         },
     },
+    completed: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        defaultValue: null,
+        validate: {
+            notEmpty: false,
+        },
+    },
     fk_email: {
         type: DataTypes.STRING,
         allowNull: false,

@@ -8,25 +8,7 @@ const {createUserTuple} = require("./APIs/Unauthenticate/UserAPIs/userAPIs");
 const fileAPIroutes = require("./APIs/Authenticate/FileAPIs/secureFileAPIs");
 const userAPIroutes = require("./APIs/Authenticate/UserAPIs/secureUserAPIs");
 const recipientAPIroutes = require("./APIs/Authenticate/RecipientAPIs/secureRecipientAPIs");
-const {findAllPDF, findAssignedPDFs} = require("./Database/PDF_Table/PDF-Functions");
 
-const init1 = async () => {
-/* A function that is called when the server is started. */
-    const data = await findAllPDF("siaxiong2@csus.edu");
-    console.log("🚀 ------------------------------------------------------🚀");
-    console.log("🚀 -> file: server.js -> line 15 -> init -> data", data);
-    console.log("🚀 ------------------------------------------------------🚀");
-};
-
-const init2 = async () => {
-    const data2 = await findAssignedPDFs("siaxiong2@csus.edu");
-    console.log("🚀 -------------------------------------------------------🚀");
-    console.log("🚀 -> file: server.js -> line 23 -> init2 -> data2", data2);
-    console.log("🚀 -------------------------------------------------------🚀");
-};
-
-// init1();
-// init2();
 // const sequelize = require("./Database/connection");
 // const PDF = require("./Database/Models/PDF");
 // const USER = require("./Database/Models/Recipient");
@@ -39,6 +21,7 @@ const init2 = async () => {
 // createUserTuple({firstName: "siadev", lastName: "xiong", email: "siaxiongdev@gmail.com"});
 
 // sequelize.drop();
+
 
 const app = express();
 const PORT = 4500;

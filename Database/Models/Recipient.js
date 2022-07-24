@@ -16,6 +16,13 @@ const Recipient = sequelize.define("RECIPIENTS", {
             notEmpty: true,
         },
     },
+    reject: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        validate: {
+            notEmpty: true,
+        },
+    },
     signed: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
