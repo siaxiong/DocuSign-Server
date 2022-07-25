@@ -143,9 +143,6 @@ const markAsSigned = async (email, fileName) => {
             fk_fileName: {
                 [Op.eq]: fileName,
             },
-            email: {
-                [Op.eq]: email,
-            },
             signed: {
                 [Op.eq]: false,
             },
