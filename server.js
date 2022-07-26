@@ -1,5 +1,4 @@
 const express = require("express");
-const axios = require("axios");
 const cors = require("cors");
 const {verifyJwt} = require("./APIs/Strategy/verify_jwt");
 const passport = require("passport");
@@ -9,11 +8,11 @@ const fileAPIroutes = require("./APIs/Authenticate/FileAPIs/secureFileAPIs");
 const userAPIroutes = require("./APIs/Authenticate/UserAPIs/secureUserAPIs");
 const recipientAPIroutes = require("./APIs/Authenticate/RecipientAPIs/secureRecipientAPIs");
 const {login, signup, confirmation} = require("./AWS/Cognito/congitoFunctions");
-const sequelize = require("./Database/connection");
-const PDF = require("./Database/Models/PDF");
-const USER = require("./Database/Models/Recipient");
-const RECIPIENT = require("./Database/Models/Recipient");
-const ASSOCIATIONS = require("./Database/Models/Associations");
+// const sequelize = require("./Database/connection");
+// const PDF = require("./Database/Models/PDF");
+// const USER = require("./Database/Models/Recipient");
+// const RECIPIENT = require("./Database/Models/Recipient");
+// const ASSOCIATIONS = require("./Database/Models/Associations");
 
 // createUserTuple({firstName: "sia2", lastName: "xiong", email: "siaxiong2@csus.edu"});
 // createUserTuple({firstName: "sia52", lastName: "xiong", email: "siaxiong52@gmail.com"});
@@ -28,6 +27,8 @@ const PORT = 4500;
 require("dotenv").config();
 
 app.listen(PORT, ()=>console.log(`Port # is : ${PORT}`));
+
+
 app.use(express.json());
 app.use(cors());
 passport.use(JWT_STRATEGY);
@@ -39,12 +40,11 @@ app.use("/api/db",
 app.use("/api/db",
     passport.authenticate("jwt", {session: false}), recipientAPIroutes);
 
-
-app.post("/api/handleSignIn", (req, res)=>{
+app.post("/api/handleSignIn", (req, res, next)=>{
     console.log("/api/handleSignIn");
     const callAPI = async () => {
         try {
-            const payload = await login(req.body.email, req.body.password);
+            const payload = await login(req.body.email, req.body.password, next);
             verifyJwt(payload.jwt) ? res.send(payload) : res.send(null);
         } catch (error) {
             console.error(error);
@@ -54,25 +54,35 @@ app.post("/api/handleSignIn", (req, res)=>{
     callAPI();
 });
 
-app.post("/api/handleSignUp", (req, res)=>{
+app.post("/api/handleSignUp", (req, res, next)=>{
     console.log("/handleSignUp");
     const callAPI = async () => {
         const requestBody = {"email": req.body.username,
             "password": req.body.password, "firstName": req.body.firstName,
             "lastName": req.body.lastName, "action": "SIGN_UP"};
         // eslint-disable-next-line no-unused-vars
-        const payload = await signup(req.body.username, req.body.password, req.body.firstName, req.body.lastName);
+        const payload = await signup(req.body.username, req.body.password, req.body.firstName, req.body.lastName, next);
         createUserTuple(requestBody);
         res.send("success");
     };
     callAPI();
 });
 
-app.post("/api/handleConfirmation", (req, res)=>{
+app.post("/api/handleConfirmation", (req, res, next)=>{
     console.log("/handleConfirmation");
     const callAPI = async () => {
-        const payload = await confirmation(req.body.email, req.body.code);
+        const payload = await confirmation(req.body.email, req.body.code, next);
         res.send(payload);
     };
     callAPI();
 });
+
+app.use((err, req, res, next) => {
+    console.log("🚀 -------------------------------------------------------🚀");
+    console.log("🚀 -> file: server.js -> line 83 -> app.use -> err", err);
+    console.log("🚀 -------------------------------------------------------🚀");
+    // console.error(err.stack);
+    res.status(500).send(err.message);
+});
+
+

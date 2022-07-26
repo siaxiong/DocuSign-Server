@@ -25,10 +25,7 @@
         "jsdoc/require-param-type":0,
         "jsdoc/newline-after-description":0,
         "arrow-parens":0,
-        "max-len": [
-            "error",
-            120
-        ],
+        "max-len": 0,
         "indent": [
             "error",
             4

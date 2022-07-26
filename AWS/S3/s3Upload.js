@@ -5,13 +5,14 @@ const multerS3 = require("multer-s3");
 
 const BUCKET_NAME = process.env.AWS_BUCKET_NAME;
 
-// const fileFilter = (req, file, cb) => {
-//     if (file.mimetype === "application/pdf") {
-//       cb(null, true);
-//     } else {
-//       cb(new Error("Invalid file type, only PDF allowed!"), false);
-//     }
-//   };
+const fileFilter = (req, file, cb) => {
+    if ((file.originalname).endsWith(".pdf")) {
+        cb(null, true);
+    } else {
+        cb(new Error("Invalid file type, only PDF allowed!"), false);
+    }
+};
+
 
 /* The above code is using multer to upload files to an S3 bucket. */
 const upload = multer({
@@ -26,6 +27,7 @@ const upload = multer({
         },
     }),
     preservePath: true,
+    fileFilter,
 });
 
 

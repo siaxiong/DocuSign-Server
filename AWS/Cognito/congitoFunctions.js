@@ -25,7 +25,7 @@ const login = async (email, password) => {
         IdentityPoolId: IDENTITY_POOL_ID,
         AccountId: ACCOUNT_ID,
         Logins: {
-            "cognito-idp.us-west-2.amazonaws.com/us-west-2_c2duFeylE": authResult.AuthenticationResult.IdToken,
+            [USER_POOL_ARN]: authResult.AuthenticationResult.IdToken,
         },
     });
 

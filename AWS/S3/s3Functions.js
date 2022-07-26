@@ -18,12 +18,12 @@ const getUploadURL = async (token) => {
         Key: "Sia-Xiong-Resume.pdf",
     };
 
-    const cmd = new PutObjectCommand(bucketParams);
+    const cmd = new PutObjectCommand(bucketParams).catch(err=>console.log(err));
 
 
     const signedURL = await getSignedUrl(s3Client, cmd, {
         expiresIn: 3600,
-    });
+    }).catch(err=>console.log(err));
     return signedURL;
 };
 
@@ -42,8 +42,8 @@ const s3DeleteFile = async (token, fileName) => {
         Bucket: "sxbucket22",
         Key: fileName,
     };
-    const cmd = new DeleteObjectCommand(bucketParams);
-    const response = await s3Client.send(cmd);
+    const cmd = new DeleteObjectCommand(bucketParams).catch(err=>console.log(err));
+    const response = await s3Client.send(cmd).catch(err=>console.log(err));
     return response;
 };
 
@@ -60,7 +60,7 @@ const streamToString = (stream) =>
         stream.on("error", reject);
         // eslint-disable-next-line max-len
         stream.on("end", () => resolve(Buffer.concat(chunks).toString("base64")));
-    });
+    }).catch(err=>console.log(err));
 
 
 /**
@@ -68,15 +68,12 @@ const streamToString = (stream) =>
  * @param fileName - The name of the file you want to get from the bucket.
  */
 const s3GetSingleFile = async (fileName) => {
-    console.log("🚀 ----------------------------------------------------------------------🚀");
-    console.log("🚀 -> file: s3Functions.js -> line 75 -> getFile -> fileName", fileName);
-    console.log("🚀 ----------------------------------------------------------------------🚀");
     const bucketParams = {
         Bucket: "sxbucket22",
         Key: fileName,
     };
-    const cmd = new GetObjectCommand(bucketParams);
-    const response = await s3Client.send(cmd);
+    const cmd = new GetObjectCommand(bucketParams).catch(err=>console.log(err));
+    const response = await s3Client.send(cmd).catch(err=>console.log(err));
     const base64 = await streamToString(response.Body);
     return base64;
 };
@@ -90,9 +87,9 @@ const s3GetAllFiles = async (email) => {
         Bucket: "sxbucket22",
         Prefix: email,
     };
-    const cmd = new ListObjectsCommand(bucketParams);
+    const cmd = new ListObjectsCommand(bucketParams).catch(err=>console.log(err));
     try {
-        const response = await s3Client.send(cmd);
+        const response = await s3Client.send(cmd).catch(err=>console.log(err));
         if (!response.Contents) {
             console.log(response.Contents);
             return null;

@@ -10,62 +10,51 @@ const {markAsSigned} = require("../../../Database/RECIPIENT_Table/Recipient-Func
 const {findAllPDF} = require("../../../Database/PDF_Table/PDF-Functions");
 
 /* This is a post request that is being sent to the server. */
-router.post("/handleAddPdf", upload.single("file"), async (req, res)=>{
+router.post("/handleAddPdf", upload.single("file"), async (req, res, next)=>{
     console.log("/handleAddPdf");
     let extractEmail = (req.file.key).split("/");
     extractEmail = extractEmail[0];
-    try {
-        await addPDF(req.file.key, extractEmail);
-        res.send("success!");
-    } catch (error) {
-        res.send(error);
-    }
+    await addPDF(req.file.key, extractEmail, next);
 });
 
-router.post("/updateUserSignedPDF", upload.single("file"), async (req, res)=>{
+router.post("/updateUserSignedPDF", upload.single("file"), async (req, res, next)=>{
     console.log("/updateUserSignedPDF");
-    console.log("🚀 -------------------------------------------------------------------🚀");
-    console.log("🚀 -> file: secureFileAPIs.js -> line 23 -> router.post -> req.query", req.query);
-    console.log("🚀 -------------------------------------------------------------------🚀");
     const response = await markAsSigned(req.query.email, req.query.fileName);
     res.send("success");
 });
 
-router.delete("/deleteFile", async (req, res)=>{
+router.delete("/deleteFile", async (req, res, next)=>{
     console.log("/deleteFile");
     const response = await s3DeleteFile(req.body.token, req.body.fileName);
     res.send(response);
 });
 
-router.get("/getFile", async (req, res)=>{
+router.get("/getFile", async (req, res, next)=>{
     console.log("/getFile");
     const base64 = await s3GetSingleFile(req.query.fileName);
     res.send(base64);
 });
 
-router.get("/getAllFiles", async (req, res)=>{
+router.get("/getAllFiles", async (req, res, next)=>{
     console.log("/getAllFiles");
     let pdfs = await findAllPDF(req.query.email, null);
-
     pdfs = (pdfs.length != 0) ? pdfs : [];
-
     res.send(pdfs);
 });
 
-router.get("/getAssignedPDFs", async (req, res)=>{
+router.get("/getAssignedPDFs", async (req, res, next)=>{
     console.log("/getAssignedPDFs");
     const data = await getAssignedPDFs(req.query.email);
     res.send(data);
 });
 
-router.get("/getPendingPDFs", async (req, res)=>{
+router.get("/getPendingPDFs", async (req, res, next)=>{
     console.log(req.query.email);
     const data = await getPendingPDFs(req.query.email);
-
     res.send(data);
 });
 
-router.get("/getCompletedPDFs", async (req, res) => {
+router.get("/getCompletedPDFs", async (req, res, next) => {
     console.log("/getCompletedPDFs");
     const response = await getCompletedPDFs(req.query.email);
     res.send(response);

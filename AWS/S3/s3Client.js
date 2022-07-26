@@ -27,7 +27,7 @@ const s3Init = (token) => {
             expiration: token.Expiration,
             sessionToken: token.SessionToken,
         },
-    });
+    }).catch(err=>console.log(err));
 
     return s3Client;
 };

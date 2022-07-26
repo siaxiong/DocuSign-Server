@@ -1,16 +1,17 @@
 const PDF = require("../Models/PDF");
 const {Op} = require("sequelize");
 const {getAssignedRecipients, getMySinglePDF, isMyTurnToSign} = require("../RECIPIENT_Table/Recipient-Functions");
+const {response} = require("express");
 
-const addPDF = async (fileName, email) => {
-    PDF.create({
+const addPDF = async (fileName, email, next) => {
+    return await PDF.create({
         fileName,
         fk_email: email,
-    });
+    }).then(response=>response).catch(err=>next(err));
 };
 
-const findAllPDF = async (email, status) => {
-    const pdfs = await PDF.findAll({
+const findAllPDF = async (email, status, next) => {
+    return await PDF.findAll({
         raw: true,
         where: {
             fk_email: {
@@ -20,30 +21,12 @@ const findAllPDF = async (email, status) => {
                 [Op.eq]: status,
             },
         },
-    });
-    console.log("🚀 -------------------------------------------------------------------🚀");
-    console.log("🚀 -> file: PDF-Functions.js -> line 24 -> findAllPDF -> pdfs", pdfs);
-    console.log("🚀 -------------------------------------------------------------------🚀");
-    return pdfs;
+    }).then(response=>response).catch(err=>next(err));
 };
 
-const findPDF = async (fileName, email) => {
-    const boolean = PDF.findOne({
-        where: {
-            fileName,
-            USEREmail: email,
-        },
-    });
-    return boolean;
-};
+const getAssignedPDFs = async (email, next) => {
+    const pdfs = await findAllPDF(email, false).catch(err=>next(err));
 
-// GOAL: Retrieve the forms assigned
-//
-//
-//
-//
-const getAssignedPDFs = async (email) => {
-    const pdfs = await findAllPDF(email, false);
     let assignedPDFs = pdfs.filter(pdf => {
         const originalOwner = ((pdf.fileName).split("/"))[0];
         return originalOwner != email ? true : false;
@@ -61,27 +44,22 @@ const getAssignedPDFs = async (email) => {
     return assignedPDFs;
 };
 
-const getPendingPDFs = async (email) => {
+const getPendingPDFs = async (email, next) => {
     const pdfs = await findAllPDF(email, false);
     let assignedPDFs = pdfs.filter(pdf => {
-        console.log("🚀 ---------------------------------------------------------------------🚀");
-        console.log("🚀 -> file: PDF-Functions.js -> line 67 -> getPendingPDFs -> pdf", pdf);
-        console.log("🚀 ---------------------------------------------------------------------🚀");
         const originalOwner = ((pdf.fileName).split("/"))[0];
         return ((originalOwner == email)) ? true : false;
     });
 
     assignedPDFs = await Promise.all(assignedPDFs.map(async pdf => {
-        const recipients = await getAssignedRecipients(pdf.fileName);
-        return recipients;
+        return await getAssignedRecipients(pdf.fileName);
     }));
 
-    assignedPDFs = assignedPDFs.filter(pdf => pdf.length != 0);
-    return assignedPDFs;
+    return assignedPDFs.filter(pdf => pdf.length != 0);
 };
 
-const getCompletedPDFs = async (email) => {
-    const pdfs = await PDF.findAll({
+const getCompletedPDFs = async (email, next) => {
+    return await PDF.findAll({
         raw: true,
         where: {
             completed: {
@@ -91,15 +69,11 @@ const getCompletedPDFs = async (email) => {
                 [Op.eq]: email,
             },
         },
-    });
-    console.log("🚀 -------------------------------------------------------------------------🚀");
-    console.log("🚀 -> file: PDF-Functions.js -> line 86 -> getCompletedPDFs -> pdfs", pdfs);
-    console.log("🚀 -------------------------------------------------------------------------🚀");
-    return pdfs;
+    }).then(response=>response).catch(err=>next(err));
 };
 
-const markPDFAsCompleted = async (fileName, email) => {
-    await PDF.update({
+const markPDFAsCompleted = async (fileName, email, next) => {
+    return await PDF.update({
         completed: true,
     }, {
         where: {
@@ -110,11 +84,8 @@ const markPDFAsCompleted = async (fileName, email) => {
                 [Op.eq]: fileName,
             },
         },
-    });
+    }).then(response=response).catch(err=>next(err));
 };
 
-const testFunction = ()=>console.log("hellow world");
-
-
-module.exports = {addPDF, findPDF, findAllPDF,
-    testFunction, getAssignedPDFs, getPendingPDFs, markPDFAsCompleted, getCompletedPDFs};
+module.exports = {addPDF, findAllPDF,
+    getAssignedPDFs, getPendingPDFs, markPDFAsCompleted, getCompletedPDFs};
