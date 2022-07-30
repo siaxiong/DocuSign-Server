@@ -8,12 +8,8 @@ const fileAPIroutes = require("./APIs/Authenticate/FileAPIs/secureFileAPIs");
 const userAPIroutes = require("./APIs/Authenticate/UserAPIs/secureUserAPIs");
 const recipientAPIroutes = require("./APIs/Authenticate/RecipientAPIs/secureRecipientAPIs");
 const {login, signup, confirmation} = require("./AWS/Cognito/congitoFunctions");
-// const sequelize = require("./Database/connection");
-// const PDF = require("./Database/Models/PDF");
-// const USER = require("./Database/Models/Recipient");
-// const RECIPIENT = require("./Database/Models/Recipient");
+const sequelize = require("./Database/connection");
 // const ASSOCIATIONS = require("./Database/Models/Associations");
-
 // createUserTuple({firstName: "sia2", lastName: "xiong", email: "siaxiong2@csus.edu"});
 // createUserTuple({firstName: "sia52", lastName: "xiong", email: "siaxiong52@gmail.com"});
 // createUserTuple({firstName: "sia23", lastName: "xiong", email: "siaxiong23@icloud.com"});

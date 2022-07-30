@@ -13,12 +13,6 @@ const IDENTITY_POOL_ID = process.env.AWS_IDENTITY_POOL_ID;
 /* the credentials obj can also take the following properties:
 Expiration, SessionToken, SecretAccessKey*/
 const s3Init = (token) => {
-    console.log("AccessKeyId:" + token.AccessKeyId);
-    console.log("SecretKey:" + token.SecretKey);
-    console.log("Expiration:" + token.Expiration);
-    console.log("SessionToken:" +token.SessionToken);
-
-
     const s3Client = new S3Client({
         region: REGION,
         credentials: {
@@ -27,8 +21,7 @@ const s3Init = (token) => {
             expiration: token.Expiration,
             sessionToken: token.SessionToken,
         },
-    }).catch(err=>console.log(err));
-
+    });
     return s3Client;
 };
 
@@ -49,21 +42,6 @@ const s3MiddleWare = function(req, res, next) {
     req.client = client;
     next();
 };
-
-/**
- * ========================================================================
- *                           SECTION HEADER
- *========================================================================*
- */
-
-/**
- * ==============================================
- *                   TODO
- *
- *
- *=============================================*
- */
-
 
 /* Creating a new s3 client with the credentials from the cognito identity pool.*/
 const s3Client = new S3Client({

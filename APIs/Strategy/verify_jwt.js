@@ -15,7 +15,6 @@ const verifyJwt = async (token) => {
 
     const pem = jwkToPem(publicJWK);
 
-
     const decodedToken = jwt.verify(token, pem);
     return decodedToken;
 };

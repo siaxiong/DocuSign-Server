@@ -11,7 +11,8 @@ const Recipient = sequelize.define("RECIPIENTS", {
     },
     order: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
+        defaultValue: null,
         validate: {
             notEmpty: true,
         },
@@ -30,6 +31,20 @@ const Recipient = sequelize.define("RECIPIENTS", {
             notEmpty: true,
         },
     },
+    currentVersion: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            notEmpty: true,
+        },
+    },
+    fk_version: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            notEmpty: true,
+        },
+    },
     fk_fileName: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -38,7 +53,7 @@ const Recipient = sequelize.define("RECIPIENTS", {
         },
     },
 }, {
-    tableName: "RECIPIENTs",
+    tableName: "RECIPIENTS",
     timestamps: false,
 });
 

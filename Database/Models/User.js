@@ -1,7 +1,7 @@
 const {DataTypes} = require("sequelize");
 const sequelize = require("../connection");
 
-const User = sequelize.define("USERs", {
+const User = sequelize.define("USERS", {
     firstName: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -26,7 +26,7 @@ const User = sequelize.define("USERs", {
     },
 
 }, {
-    tableName: "USERs",
+    tableName: "USERS",
     timestamps: false,
 });
 

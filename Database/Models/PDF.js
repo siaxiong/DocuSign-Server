@@ -1,11 +1,26 @@
 const {DataTypes} = require("sequelize");
 const sequelize = require("../connection");
 
-const PDF = sequelize.define("PDFs", {
+const PDF = sequelize.define("PDFS", {
     fileName: {
         type: DataTypes.STRING,
         allowNull: false,
         primaryKey: true,
+        validate: {
+            notEmpty: true,
+        },
+    },
+    originalVersion: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        primaryKey: true,
+        validate: {
+            notEmpty: true,
+        },
+    },
+    currentVersion: {
+        type: DataTypes.STRING,
+        allowNull: false,
         validate: {
             notEmpty: true,
         },
@@ -20,14 +35,14 @@ const PDF = sequelize.define("PDFs", {
     },
     fk_email: {
         type: DataTypes.STRING,
-        allowNull: false,
         primaryKey: true,
+        allowNull: false,
         validate: {
             notEmpty: true,
         },
     },
 }, {
-    tableName: "PDFs",
+    tableName: "PDFS",
     timestamps: false,
 });
 

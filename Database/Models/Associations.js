@@ -25,23 +25,23 @@ PDF.belongsTo(User, {
 });
 
 
-PDF.hasMany(Recipient, {
-    foreignKey: {
-        name: "fk_fileName",
-        allowNull: false,
-        validate: {
-            notEmpty: true,
-        },
-    },
-});
+// PDF.hasMany(Recipient, {
+//     foreignKey: {
+//         name: "fk_version",
+//         allowNull: false,
+//         validate: {
+//             notEmpty: true,
+//         },
+//     },
+// });
 
-Recipient.belongsTo(PDF, {
-    foreignKey: {
-        name: "fk_fileName",
-        allowNull: false,
-        validate: {
-            notEmpty: true,
-        },
-    },
-});
+// Recipient.belongsTo(PDF, {
+//     foreignKey: {
+//         name: "fk_version",
+//         allowNull: false,
+//         validate: {
+//             notEmpty: true,
+//         },
+//     },
+// });
 sequelize.sync();

@@ -3,7 +3,7 @@ const express = require("express");
 // eslint-disable-next-line new-cap
 const router = express.Router();
 const upload = require("../../../AWS/S3/s3Upload");
-const {s3DeleteFile, s3GetSingleFile, s3GetAllFiles} = require("../../../AWS/S3/s3Functions");
+const {s3DeleteFile, s3GetBase64File, s3GetAllFiles} = require("../../../AWS/S3/s3Functions");
 const {addPDF, getAssignedPDFs, getPendingPDFs, getCompletedPDFs} =
 require("../../../Database/PDF_Table/PDF-Functions");
 const {markAsSigned} = require("../../../Database/RECIPIENT_Table/Recipient-Functions");
@@ -14,14 +14,10 @@ router.post("/handleAddPdf", upload.single("file"), async (req, res, next)=>{
     console.log("/handleAddPdf");
     let extractEmail = (req.file.key).split("/");
     extractEmail = extractEmail[0];
-    await addPDF(req.file.key, extractEmail, next);
+    await addPDF(extractEmail, req.file, next);
+    res.send("success!");
 });
 
-router.post("/updateUserSignedPDF", upload.single("file"), async (req, res, next)=>{
-    console.log("/updateUserSignedPDF");
-    const response = await markAsSigned(req.query.email, req.query.fileName);
-    res.send("success");
-});
 
 router.delete("/deleteFile", async (req, res, next)=>{
     console.log("/deleteFile");
@@ -29,34 +25,39 @@ router.delete("/deleteFile", async (req, res, next)=>{
     res.send(response);
 });
 
-router.get("/getFile", async (req, res, next)=>{
-    console.log("/getFile");
-    const base64 = await s3GetSingleFile(req.query.fileName);
+router.get("/getBase64File", async (req, res, next)=>{
+    console.log("/getBase64File");
+    console.log(req.query.formName);
+    console.log(req.query.formVersion);
+    const base64 = await s3GetBase64File(req.query.formName, req.query.formVersion);
     res.send(base64);
 });
 
-router.get("/getAllFiles", async (req, res, next)=>{
-    console.log("/getAllFiles");
-    let pdfs = await findAllPDF(req.query.email, null);
+router.get("/getAvailableFiles", async (req, res, next)=>{
+    console.log("/getAvailableFiles");
+    let pdfs = await findAllPDF(req.query.email, null, next);
     pdfs = (pdfs.length != 0) ? pdfs : [];
     res.send(pdfs);
 });
 
 router.get("/getAssignedPDFs", async (req, res, next)=>{
     console.log("/getAssignedPDFs");
-    const data = await getAssignedPDFs(req.query.email);
+    const data = await getAssignedPDFs(req.query.email, next);
     res.send(data);
 });
 
 router.get("/getPendingPDFs", async (req, res, next)=>{
     console.log(req.query.email);
-    const data = await getPendingPDFs(req.query.email);
+    const data = await getPendingPDFs(req.query.email, next);
     res.send(data);
 });
 
 router.get("/getCompletedPDFs", async (req, res, next) => {
     console.log("/getCompletedPDFs");
-    const response = await getCompletedPDFs(req.query.email);
+    const response = await getCompletedPDFs(req.query.email, next);
+    console.log("🚀 ----------------------------------------------------------------------------🚀");
+    console.log("🚀 -> file: secureFileAPIs.js -> line 66 -> router.get -> response", response);
+    console.log("🚀 ----------------------------------------------------------------------------🚀");
     res.send(response);
 });
 
