@@ -43,6 +43,9 @@ router.get("/getAvailableFiles", async (req, res, next)=>{
 router.get("/getAssignedPDFs", async (req, res, next)=>{
     console.log("/getAssignedPDFs");
     const data = await getAssignedPDFs(req.query.email, next);
+    console.log("🚀 --------------------------------------------------------------------🚀");
+    console.log("🚀 -> file: secureFileAPIs.js -> line 46 -> router.get -> data", data);
+    console.log("🚀 --------------------------------------------------------------------🚀");
     res.send(data);
 });
 
@@ -56,7 +59,7 @@ router.get("/getCompletedPDFs", async (req, res, next) => {
     console.log("/getCompletedPDFs");
     const response = await getCompletedPDFs(req.query.email, next);
     console.log("🚀 ----------------------------------------------------------------------------🚀");
-    console.log("🚀 -> file: secureFileAPIs.js -> line 66 -> router.get -> response", response);
+    console.log("🚀 -> file: secureFileAPIs.js -> line 58 -> router.get -> response", response);
     console.log("🚀 ----------------------------------------------------------------------------🚀");
     res.send(response);
 });

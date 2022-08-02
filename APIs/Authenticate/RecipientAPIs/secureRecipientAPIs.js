@@ -4,7 +4,7 @@ const express = require("express");
 const router = express.Router();
 const Recipient = require("../../../Database/Models/Recipient");
 const {updatePDFVersion} = require("../../../Database/PDF_Table/PDF-Functions");
-const {addRecipients, markAsSigned, isInOrder} = require("../../../Database/RECIPIENT_Table/Recipient-Functions");
+const {addRecipients, markAsSignedInOrder, isInOrder, markAsSignedUnOrder} = require("../../../Database/RECIPIENT_Table/Recipient-Functions");
 const {Op} = require("sequelize");
 const {raw} = require("body-parser");
 const upload = require("../../../AWS/S3/s3Upload");
@@ -24,21 +24,20 @@ router.post("/addRecipientsInOrder", upload.single("file"), async (req, res, nex
 router.post("/addRecipientsUnOrder", upload.single("file"), s3InitMiddleware, async (req, res, next)=>{
     console.log("/addRecipientsUnOrder");
     const emailArr = (req.query.emailList).split(",");
-    console.log("addRecipientsUnOrder req.file");
-    console.log(req.file);
     await updatePDFVersion(req.query.ownerEmail, req.file.versionId, req.query.formVersion, req.query.formName);
     await addRecipients(emailArr, req.query.ownerEmail, req.s3Client, req.query.formName, req.file.versionId, req.query.formVersion, false, next);
     res.send("Success! /addRecipientsUnOrder");
 });
 router.post("/updateRecipient", upload.single("file"), async (req, res, next)=>{
     console.log("/updateRecipient");
+    const email = req.query.email;
+    const newVersionId = req.file.versionId;
+    const currentVersion = req.query.formVersion;
+    const fileName = req.query.formName;
 
-    const value = await isInOrder(req.query.formVersion, next);
-    console.log("🚀 ----------------------------------------------------------------------------🚀");
-    console.log("🚀 -> file: secureRecipientAPIs.js -> line 37 -> router.post -> value", value);
-    console.log("🚀 ----------------------------------------------------------------------------🚀");
-    // await updatePDFVersion(req.query.email, req.file.versionId, req.query.formVersion, req.query.formName, next);
-    // const response = await markAsSigned(req.file.versionId, req.query.email, req.query.formVersion, req.query.formName, next);
+    const value = await isInOrder(currentVersion, next);
+    if (value) await markAsSignedInOrder(newVersionId, email, currentVersion, fileName, next);
+    else await markAsSignedUnOrder(newVersionId, email, currentVersion, fileName, next);
     res.send("success");
 });
 

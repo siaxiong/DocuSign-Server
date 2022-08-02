@@ -5,7 +5,6 @@ const {
     ListObjectsCommand,
 } = require("@aws-sdk/client-s3");
 const {s3Init, s3Client} = require("./s3Client");
-const path = require("path");
 const {v4: uuidv4} = require("uuid");
 
 
