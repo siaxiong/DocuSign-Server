@@ -1,6 +1,5 @@
 const User = require("./User");
 const PDF = require("./PDF");
-const Recipient = require("./Recipient");
 const sequelize = require("../connection");
 
 

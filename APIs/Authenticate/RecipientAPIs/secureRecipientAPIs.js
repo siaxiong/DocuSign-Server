@@ -14,8 +14,7 @@ const {s3InitMiddleware} = require("../../Middleware/middlewareFunctions");
 
 router.post("/addRecipientsInOrder", upload.single("file"), async (req, res, next)=>{
     console.log("/addRecipientsInOrder");
-    const emailArr = (req.query.emailList).split(",");
-    console.log("addRecipientsInOrder req.file");
+    const emailArr = JSON.parse(req.query.recipientEmails);
     await updatePDFVersion(req.query.ownerEmail, req.file.versionId, req.query.formVersion, req.query.formName);
     await addRecipients(emailArr, req.query.ownerEmail, null, req.query.formName, req.file.versionId, req.query.formVersion, true, next);
     res.send("Success! /addRecipientsInOrder");
@@ -23,7 +22,7 @@ router.post("/addRecipientsInOrder", upload.single("file"), async (req, res, nex
 
 router.post("/addRecipientsUnOrder", upload.single("file"), s3InitMiddleware, async (req, res, next)=>{
     console.log("/addRecipientsUnOrder");
-    const emailArr = (req.query.emailList).split(",");
+    const emailArr = JSON.parse(req.query.recipientEmails);
     await updatePDFVersion(req.query.ownerEmail, req.file.versionId, req.query.formVersion, req.query.formName);
     await addRecipients(emailArr, req.query.ownerEmail, req.s3Client, req.query.formName, req.file.versionId, req.query.formVersion, false, next);
     res.send("Success! /addRecipientsUnOrder");

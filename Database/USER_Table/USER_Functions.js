@@ -1,12 +1,9 @@
 const USER = require("../Models/User");
 
-const getAllUsers = async () => {
-    const users = USER.findAll({
-        attributes: ["email"],
+const getAllUsers = async (next) => {
+    return USER.findAll({
         raw: true,
-    });
-
-    return users;
+    }).then(resp=>resp).catch(err=>next(err));
 };
 
 module.exports = {getAllUsers};

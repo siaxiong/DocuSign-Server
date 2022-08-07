@@ -1,7 +1,6 @@
 const PDF = require("../Models/PDF");
 const {Op} = require("sequelize");
 const {getAssignedRecipients, getMySingleRecipient, isMyTurnToSign} = require("../RECIPIENT_Table/Recipient-Functions");
-const {response} = require("express");
 const Recipient = require("../Models/Recipient");
 
 const addPDF = async (email, file, next) => {

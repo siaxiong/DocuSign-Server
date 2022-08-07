@@ -5,13 +5,11 @@ const {
     ListObjectsCommand,
 } = require("@aws-sdk/client-s3");
 const {s3Init, s3Client} = require("./s3Client");
-const {v4: uuidv4} = require("uuid");
 
 
 const s3CopyPDF = async (client, email, key, version ) => {
     const options = {
         Bucket: "sxbucket22",
-        // Key: email+ "/" + path.basename(key, ".pdf") + "-" + email + "+" + uuidv4() + ".pdf",
         Key: key,
         CopySource: "sxbucket22/" + key + "?versionId=" + version,
     };

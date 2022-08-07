@@ -3,6 +3,7 @@ const express = require("express");
 // eslint-disable-next-line new-cap
 const router = express.Router();
 const upload = require("../../../AWS/S3/s3Upload");
+const {getAllUsers} = require("../../../Database/USER_Table/USER_Functions");
 const {s3DeleteFile, s3GetBase64File, s3GetAllFiles} = require("../../../AWS/S3/s3Functions");
 const {addPDF, getAssignedPDFs, getPendingPDFs, getCompletedPDFs} =
 require("../../../Database/PDF_Table/PDF-Functions");
@@ -18,6 +19,11 @@ router.post("/handleAddPdf", upload.single("file"), async (req, res, next)=>{
     res.send("success!");
 });
 
+router.get("/getAllUsers", async (req, res, next)=>{
+    console.log("/getAllUsers");
+    const data = await getAllUsers(next);
+    res.send(data);
+});
 
 router.delete("/deleteFile", async (req, res, next)=>{
     console.log("/deleteFile");
