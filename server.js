@@ -1,3 +1,5 @@
+require("dotenv").config({override: true});
+
 const express = require("express");
 const cors = require("cors");
 const {verifyJwt} = require("./APIs/Strategy/verify_jwt");
@@ -8,19 +10,20 @@ const fileAPIroutes = require("./APIs/Authenticate/FileAPIs/secureFileAPIs");
 const userAPIroutes = require("./APIs/Authenticate/UserAPIs/secureUserAPIs");
 const recipientAPIroutes = require("./APIs/Authenticate/RecipientAPIs/secureRecipientAPIs");
 const {login, signup, confirmation} = require("./AWS/Cognito/congitoFunctions");
-// const ASSOCIATIONS = require("./Database/Models/Associations");
 // createUserTuple({firstName: "sia2", lastName: "xiong", email: "siaxiong2@csus.edu"});
 // createUserTuple({firstName: "sia52", lastName: "xiong", email: "siaxiong52@gmail.com"});
 // createUserTuple({firstName: "sia23", lastName: "xiong", email: "siaxiong23@icloud.com"});
 // createUserTuple({firstName: "siadev", lastName: "xiong", email: "siaxiongdev@gmail.com"});
 
+const ASSOCIATIONS = require("./Database/Models/Associations");
+
 // const sequelize = require("./Database/connection");
 // sequelize.drop();
 
 
+
 const app = express();
 const PORT = 4500;
-require("dotenv").config();
 
 app.listen(PORT, ()=>console.log(`Port # is : ${PORT}`));
 
@@ -36,41 +39,44 @@ app.use("/api/db",
 app.use("/api/db",
     passport.authenticate("jwt", {session: false}), recipientAPIroutes);
 
-app.post("/api/handleSignIn", (req, res, next)=>{
+app.post("/api/handleSignIn", async (req, res, next)=>{
     console.log("/api/handleSignIn");
-    const callAPI = async () => {
-        try {
-            const payload = await login(req.body.email, req.body.password, next);
-            verifyJwt(payload.jwt) ? res.send(payload) : res.send(null);
-        } catch (error) {
-            console.error(error);
-            res.send(error);
-        }
-    };
-    callAPI();
+    try {
+        const payload = await login(req.body.email, req.body.password, next);
+        verifyJwt(payload.jwt) ? res.send(payload) : res.send(null);
+    } catch (error) {
+        console.error(error);
+        res.send(error);
+    }
+
 });
 
-app.post("/api/handleSignUp", (req, res, next)=>{
+app.post("/api/handleSignUp", async (req, res, next)=>{
     console.log("/handleSignUp");
-    const callAPI = async () => {
+    try {
         const requestBody = {"email": req.body.username,
-            "password": req.body.password, "firstName": req.body.firstName,
-            "lastName": req.body.lastName, "action": "SIGN_UP"};
+        "password": req.body.password, "firstName": req.body.firstName,
+        "lastName": req.body.lastName, "action": "SIGN_UP"};
         // eslint-disable-next-line no-unused-vars
-        const payload = await signup(req.body.username, req.body.password, req.body.firstName, req.body.lastName, next);
-        createUserTuple(requestBody);
-        res.send("success");
-    };
-    callAPI();
+        await signup(req.body.username, req.body.password, req.body.firstName, req.body.lastName, next)
+        await createUserTuple(requestBody);
+        res.send("Sign up was a success!")
+        
+    } catch (error) {
+        console.log(error);
+        res.status(400).send(error);
+        
+    }
 });
 
 app.post("/api/handleConfirmation", (req, res, next)=>{
     console.log("/handleConfirmation");
-    const callAPI = async () => {
-        const payload = await confirmation(req.body.email, req.body.code, next);
-        res.send(payload);
-    };
-    callAPI();
+    confirmation(req.body.email, req.body.code)
+    .then(resp=>res.send("Confirmation was a succes!"))
+    .catch(error=>{
+        console.log(error);
+        res.status(400).send(error);
+    })
 });
 
 app.use((err, req, res, next) => {
